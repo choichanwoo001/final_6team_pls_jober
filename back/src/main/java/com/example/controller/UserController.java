@@ -1,7 +1,9 @@
 package com.example.controller;
 
+import com.example.dto.UserCreateRequest;
 import com.example.entity.User;
 import com.example.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,16 +30,15 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user) {
-        // 중복 검사
-        if (userService.existsByUsername(user.getUsername())) {
+    public ResponseEntity<User> createUser(@Valid @RequestBody UserCreateRequest request) {
+        if (userService.existsByUsername(request.getUsername())) {
             return ResponseEntity.badRequest().build();
         }
-        if (userService.existsByEmail(user.getEmail())) {
+        if (userService.existsByEmail(request.getEmail())) {
             return ResponseEntity.badRequest().build();
         }
-        
-        User createdUser = userService.createUser(user);
+
+        User createdUser = userService.createUser(request);
         return ResponseEntity.ok(createdUser);
     }
 
@@ -57,4 +58,3 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 }
-

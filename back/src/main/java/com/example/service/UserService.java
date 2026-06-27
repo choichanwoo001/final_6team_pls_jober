@@ -1,5 +1,6 @@
 package com.example.service;
 
+import com.example.dto.UserCreateRequest;
 import com.example.entity.User;
 import com.example.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +30,15 @@ public class UserService {
     }
 
     public User createUser(User user) {
-        // 비밀번호 해시화
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return userRepository.save(user);
+    }
+
+    public User createUser(UserCreateRequest request) {
+        User user = new User();
+        user.setUsername(request.getUsername());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setEmail(request.getEmail());
         return userRepository.save(user);
     }
 
@@ -59,4 +67,3 @@ public class UserService {
         return userRepository.existsByEmail(email);
     }
 }
-
